@@ -4,7 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>{{ title }}</title>
+
+<title>{% block title %}My shop{% endblock %}</title>
+
 <meta name="keywords" content="web store, free templates, website templates, CSS, HTML" />
 <meta name="description" content="Web Store Theme - free CSS template provided by templatemo.com" />
 <link href="{% static 'shop/css/templatemo_style.css' %}" rel="stylesheet" type="text/css" />
@@ -87,24 +89,17 @@ ddsmoothmenu.init({
 
             <div id="templatemo_menu" class="ddsmoothmenu">
             <ul>
-                <li><a href="#" class="selected">Home</a></li>
-                <li><a href="#">Products</a>
-    <!--                <ul>-->
-    <!--                    <li><a href="#">Sub menu 1</a></li>-->
-    <!--                    <li><a href="#">Sub menu 2</a></li>-->
-    <!--                    <li><a href="#">Sub menu 3</a></li>-->
-    <!--              </ul>-->
+                <li><a href="{% url 'shop:product_list' %}" class="selected">Головна</a></li>
+                <li><a href="{% url 'cart:cart_detail' %}">Кошик</a></li>
+                <li><a href="about">Увійти</a></li>
+                <li><a href="faqs">Мій профіль</a>
+                    <ul>
+                        <li><a href="#">Кошик</a></li>
+                        <li><a href="#">Особистий кабінет</a></li>
+                        <li><a href="#">Адмін панель</a></li>
+                        <li><a href="#">Вийти</a></li>
+                    </ul>
                 </li>
-                <li><a href="about">About</a>
-    <!--                <ul>-->
-    <!--                    <li><a href="#">Sub menu 1</a></li>-->
-    <!--                    <li><a href="#">Sub menu 2</a></li>-->
-    <!--                    <li><a href="#">Sub menu 3</a></li>-->
-    <!--                    <li><a href="#">Sub menu 4</a></li>-->
-    <!--                    <li><a href="#">Sub menu 5</a></li>-->
-    <!--              </ul>-->
-                </li>
-                <li><a href="faqs">FAQs</a></li>
                 <li><a href="checkout">Checkout</a></li>
                 <li><a href="contact">Contact</a></li>
             </ul>
@@ -118,82 +113,42 @@ ddsmoothmenu.init({
         <a href="#" class="buy_now">Browse All Products</a>
     </div> <!-- END of middle -->
 
+        {% block categories %}
 
-            <div id="templatemo_main_top"></div>
-        <div id="templatemo_main">
-            <div id="product_slider">
-                <div id="SlideItMoo_outer">
-                    <div id="SlideItMoo_inner">
-                        <div id="SlideItMoo_items">
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/1" target="_parent">
-                                    <img src="{% static 'shop/images/gallery/01.jpg' %}" height="150" width="200" alt="product 1" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/2" target="_parent">
-                                    <img src="{% static 'shop/images/gallery/02.jpg' %}" height="150" width="200" alt="product 2' %}" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/3" target="_parent">
-                                     <img src="{% static 'shop/images/gallery/03.jpg' %}" height="150" width="200" alt="product 3" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/4" target="_parent">
-                                    <img src="{% static 'shop/images/gallery/04.jpg' %}" height="150" width="200" alt="product 4" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/5" target="_parent">
-                                   <img src="{% static 'shop/images/gallery/05.jpg' %}" height="150" width="200" alt="product 5" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/6" target="_parent">
-                                    <img src="{% static 'shop/images/gallery/06.jpg' %}" height="150" width="200" alt="product 6" /></a>
-                            </div>
-                            <div class="SlideItMoo_element">
-                                    <a href="http://www.templatemo.com/page/6" target="_parent">
-                                    <img src="{% static 'shop/images/gallery/07.jpg' %}" height="150" width="200" alt="product 7" /></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cleaner"></div>
-            </div>
+        {% endblock %}
 
-
-
-            <div id="sidebar">
-                <h3>Категорії</h3>
-                <ul class="sidebar_menu">
-
-                    {% for category in categories %}
-                        <li><a href="#">{{ category.name }}</a></li>
-                    {% endfor %}
-
-                </ul>
-
-<!--                <h3>Newsletter</h3>-->
-<!--                <p>Praesent aliquam mi id tellus pretium pulvinar in vel ligula.</p>-->
-<!--                <div id="newsletter">-->
-<!--                    <form action="#" method="get">-->
-<!--                      <input type="text" value="Subscribe" name="email_newsletter" id="email_newsletter" title="email_newsletter" onfocus="clearText(this)" onblur="clearText(this)" class="txt_field" />-->
-<!--                      <input type="submit" name="subscribe" value="Subscribe" alt="Subscribe" id="subscribebtn" title="Subscribe" class="subscribebtn"  />-->
-<!--                    </form>-->
-<!--                    <div class="cleaner"></div>-->
-<!--                </div>-->
-            </div> <!-- END of sidebar -->
+              <div class="cart">
+        {% with total_items=cart|length %}
+          {% if total_items > 0 %}
+            Ваш кошик:
+            <a href="{% url 'cart:cart_detail' %}">
+              {{ total_items }} товар {{ total_items|pluralize }},
+              ${{ cart.get_total_price }}
+            </a>
+          {% elif not order %}
+            Ваш кошик порожній.
+          {% endif %}
+        {% endwith %}
+      </div>
 
         {% block content %}
 
         {% endblock %}
 
         <div id="templatemo_footer">
+
             <div class="col col_16">
-                <h4>Categories</h4>
+                <h4>Категорії</h4>
                 <ul class="footer_menu">
-                    {% for category in categories %}
-                        <li><a href="#">{{ category.name }}</a></li>
-                    {% endfor %}
-              </ul>
+      <li {% if not category %}class="selected"{% endif %}>
+        <a href="{% url 'shop:product_list' %}">Всі категорії</a>
+      </li>
+      {% for c in categories %}
+        <li {% if category.slug == c.slug %} class="selected"{% endif %}>
+          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
             </div>
             <div class="col col_16">
                 <h4>Pages</h4>

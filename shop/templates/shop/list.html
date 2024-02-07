@@ -1,0 +1,102 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block categories %}
+    <div id="templatemo_main_top"></div>
+        <div id="templatemo_main">
+            <div id="product_slider">
+                <div id="SlideItMoo_outer">
+                    <div id="SlideItMoo_inner">
+                        <div id="SlideItMoo_items">
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/1" target="_parent">
+                                    <img src="{% static 'shop/images/gallery/01.jpg' %}" height="150" width="200" alt="product 1" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/2" target="_parent">
+                                    <img src="{% static 'shop/images/gallery/02.jpg' %}" height="150" width="200" alt="product 2' %}" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/3" target="_parent">
+                                     <img src="{% static 'shop/images/gallery/03.jpg' %}" height="150" width="200" alt="product 3" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/4" target="_parent">
+                                    <img src="{% static 'shop/images/gallery/04.jpg' %}" height="150" width="200" alt="product 4" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/5" target="_parent">
+                                   <img src="{% static 'shop/images/gallery/05.jpg' %}" height="150" width="200" alt="product 5" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/6" target="_parent">
+                                    <img src="{% static 'shop/images/gallery/06.jpg' %}" height="150" width="200" alt="product 6" /></a>
+                            </div>
+                            <div class="SlideItMoo_element">
+                                    <a href="http://www.templatemo.com/page/6" target="_parent">
+                                    <img src="{% static 'shop/images/gallery/07.jpg' %}" height="150" width="200" alt="product 7" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cleaner"></div>
+            </div>
+
+  <div id="sidebar">
+    <h3>Categories</h3>
+    <ul class="sidebar_menu">
+      <li {% if not category %}class="selected"{% endif %}>
+        <a href="{% url 'shop:product_list' %}">Всі категорії</a>
+      </li>
+      {% for c in categories %}
+        <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+          <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+<!--                <h3>Newsletter</h3>-->
+<!--                <p>Praesent aliquam mi id tellus pretium pulvinar in vel ligula.</p>-->
+<!--                <div id="newsletter">-->
+<!--                    <form action="#" method="get">-->
+<!--                      <input type="text" value="Subscribe" name="email_newsletter" id="email_newsletter" title="email_newsletter" onfocus="clearText(this)" onblur="clearText(this)" class="txt_field" />-->
+<!--                      <input type="submit" name="subscribe" value="Subscribe" alt="Subscribe" id="subscribebtn" title="Subscribe" class="subscribebtn"  />-->
+<!--                    </form>-->
+<!--                    <div class="cleaner"></div>-->
+<!--                </div>-->
+  </div> <!-- END of sidebar -->
+{% endblock %}
+
+{% block content %}
+ <div id="content">
+   {% for product in products %}
+        	<div class="col col_14 product_gallery">
+              <a href="{{ product.get_absolute_url }}">
+          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" style="width: 205px;">
+              </a>
+                <h3>{{ product.name }}</h3>
+                <p class="product_price">{{ product.price }}</p>
+                <a href="{% url 'cart:cart_detail' %}" class="add_to_cart">Додати в кошик</a>
+            </div>
+   {% endfor %}
+
+<div class="Paginator">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1">Previous</a>
+    </li>
+      {% for page in products.paginator.page_range %}
+    <li class="page-item"><a class="page-link" href="{% url 'shop:product_list' slug_url page %}">{{ page }}</a></li>
+        {% endfor %}
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</div>
+
+  </div>
+{% endblock %}
